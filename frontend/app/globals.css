@@ -2,6 +2,11 @@
 
 :root {
   --font-inter: "Inter", sans-serif;
+
+  /* Density glow tokens */
+  --glow-low:    0 0 20px rgba(34, 197, 94,  0.35);
+  --glow-medium: 0 0 20px rgba(234, 179, 8,  0.35);
+  --glow-high:   0 0 20px rgba(239, 68,  68, 0.35);
 }
 
 * {
@@ -16,7 +21,7 @@ body {
   scroll-behavior: smooth;
 }
 
-/* Subtle scrollbar */
+/* ── Scrollbar ─────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: #0a0f1e; }
 ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
@@ -24,3 +29,33 @@ body {
 
 /* Selection highlight */
 ::selection { background: rgba(139, 92, 246, 0.35); }
+
+/* ── Density glow helpers ─────────────────────────────── */
+.glow-low    { box-shadow: var(--glow-low); }
+.glow-medium { box-shadow: var(--glow-medium); }
+.glow-high   { box-shadow: var(--glow-high); }
+
+/* ── Animated alert pulse ─────────────────────────────── */
+@keyframes alert-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55); }
+  50%       { box-shadow: 0 0 16px 4px rgba(239, 68, 68, 0.20); }
+}
+
+.alert-pulse {
+  animation: alert-pulse 2s ease-in-out infinite;
+}
+
+/* ── Status dot pulse ─────────────────────────────────── */
+@keyframes dot-ping {
+  0%       { transform: scale(1); opacity: 0.9; }
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+.dot-ping { animation: dot-ping 1.5s ease-out infinite; }
+
+/* ── Card hover lift ──────────────────────────────────── */
+.card-hover {
+  transition: transform 300ms ease-in-out, box-shadow 300ms ease-in-out;
+}
+.card-hover:hover {
+  transform: scale(1.015);
+}
