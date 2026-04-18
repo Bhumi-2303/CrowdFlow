@@ -1,0 +1,18 @@
+# Google Cloud SDK
+backend/google-cloud-sdk/
+
+# Python
+backend/.venv/
+__pycache__/
+
+# Node
+node_modules/
+.next/
+
+# Env
+.env
+.env.local
+
+# Misc
+*.tar.gz
+*.zip

@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root {
+  --font-inter: "Inter", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: var(--font-inter);
+  background-color: #0a0f1e;
+  color: #f1f5f9;
+  scroll-behavior: smooth;
+}
+
+/* Subtle scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0f1e; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+/* Selection highlight */
+::selection { background: rgba(139, 92, 246, 0.35); }
