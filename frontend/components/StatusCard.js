@@ -3,145 +3,152 @@
 import MapView from "./MapView";
 
 // ─────────────────────────────────────────────────────────────
-// Density-based color system
-// LOW → green (#22c55e) | MEDIUM → yellow (#eab308) | HIGH → red (#ef4444)
+// Density color system
+// low → emerald-400 | medium → amber-400 | high → rose-500
 // ─────────────────────────────────────────────────────────────
-const DENSITY_THEME = {
+const DENSITY = {
   low: {
-    hex:        "#22c55e",
-    glow:       "glow-low",
-    border:     "border-[#22c55e]/40",
-    bg:         "bg-[#22c55e]/10",
-    text:       "text-[#22c55e]",
-    badge:      "bg-[#22c55e]/20 text-[#22c55e]",
-    barBg:      "bg-[#22c55e]",
-    dotColor:   "bg-[#22c55e]",
-    label:      "LOW",
+    glow:      "glow-low",
+    borderDk:  "border-emerald-400/40",
+    borderLt:  "border-emerald-500/30",
+    bgDk:      "bg-emerald-400/10",
+    bgLt:      "bg-emerald-50",
+    textColor: "text-emerald-400",
+    barColor:  "bg-emerald-400",
+    badgeDk:   "bg-emerald-400/20 text-emerald-300",
+    badgeLt:   "bg-emerald-100 text-emerald-700",
+    dotColor:  "bg-emerald-400",
+    statusLabel: "Nominal",
+    densityLabel: "LOW",
+    hex: "#34d399",
   },
   medium: {
-    hex:        "#eab308",
-    glow:       "glow-medium",
-    border:     "border-[#eab308]/40",
-    bg:         "bg-[#eab308]/10",
-    text:       "text-[#eab308]",
-    badge:      "bg-[#eab308]/20 text-[#eab308]",
-    barBg:      "bg-[#eab308]",
-    dotColor:   "bg-[#eab308]",
-    label:      "MEDIUM",
+    glow:      "glow-medium",
+    borderDk:  "border-amber-400/40",
+    borderLt:  "border-amber-400/30",
+    bgDk:      "bg-amber-400/10",
+    bgLt:      "bg-amber-50",
+    textColor: "text-amber-400",
+    barColor:  "bg-amber-400",
+    badgeDk:   "bg-amber-400/20 text-amber-300",
+    badgeLt:   "bg-amber-100 text-amber-700",
+    dotColor:  "bg-amber-400",
+    statusLabel: "Elevated",
+    densityLabel: "MEDIUM",
+    hex: "#fbbf24",
   },
   high: {
-    hex:        "#ef4444",
-    glow:       "glow-high",
-    border:     "border-[#ef4444]/40",
-    bg:         "bg-[#ef4444]/10",
-    text:       "text-[#ef4444]",
-    badge:      "bg-[#ef4444]/20 text-[#ef4444]",
-    barBg:      "bg-[#ef4444]",
-    dotColor:   "bg-[#ef4444]",
-    label:      "HIGH",
+    glow:      "glow-high",
+    borderDk:  "border-rose-500/50",
+    borderLt:  "border-rose-400/40",
+    bgDk:      "bg-rose-500/10",
+    bgLt:      "bg-rose-50",
+    textColor: "text-rose-400",
+    barColor:  "bg-rose-500",
+    badgeDk:   "bg-rose-500/20 text-rose-300",
+    badgeLt:   "bg-rose-100 text-rose-700",
+    dotColor:  "bg-rose-500",
+    statusLabel: "Critical",
+    densityLabel: "HIGH",
+    hex: "#f87171",
   },
 };
 
-/** Map generic level strings to Tailwind tokens (weather, traffic, risk) */
 const LEVEL_COLORS = {
-  low:    { bg: "bg-emerald-500/15", border: "border-emerald-500/40", text: "text-emerald-400", badge: "bg-emerald-500/20 text-emerald-300" },
-  medium: { bg: "bg-amber-500/15",   border: "border-amber-500/40",   text: "text-amber-400",   badge: "bg-amber-500/20  text-amber-300"  },
-  high:   { bg: "bg-rose-500/15",    border: "border-rose-500/40",    text: "text-rose-400",    badge: "bg-rose-500/20   text-rose-300"    },
-  normal: { bg: "bg-sky-500/15",     border: "border-sky-500/40",     text: "text-sky-400",     badge: "bg-sky-500/20    text-sky-300"     },
-  cool:   { bg: "bg-cyan-500/15",    border: "border-cyan-500/40",    text: "text-cyan-400",    badge: "bg-cyan-500/20   text-cyan-300"    },
-  hot:    { bg: "bg-orange-500/15",  border: "border-orange-500/40",  text: "text-orange-400",  badge: "bg-orange-500/20 text-orange-300"  },
+  low:    { borderDk: "border-emerald-500/40", bgDk: "bg-emerald-500/10", badgeDk: "bg-emerald-500/20 text-emerald-300", badgeLt: "bg-emerald-100 text-emerald-700", textColor: "text-emerald-400" },
+  medium: { borderDk: "border-amber-500/40",   bgDk: "bg-amber-500/10",   badgeDk: "bg-amber-500/20 text-amber-300",     badgeLt: "bg-amber-100 text-amber-700",     textColor: "text-amber-400"   },
+  high:   { borderDk: "border-rose-500/40",    bgDk: "bg-rose-500/10",    badgeDk: "bg-rose-500/20 text-rose-300",       badgeLt: "bg-rose-100 text-rose-700",       textColor: "text-rose-400"    },
+  normal: { borderDk: "border-sky-500/40",     bgDk: "bg-sky-500/10",     badgeDk: "bg-sky-500/20 text-sky-300",         badgeLt: "bg-sky-100 text-sky-700",         textColor: "text-sky-400"     },
+  cool:   { borderDk: "border-cyan-500/40",    bgDk: "bg-cyan-500/10",    badgeDk: "bg-cyan-500/20 text-cyan-300",       badgeLt: "bg-cyan-100 text-cyan-700",       textColor: "text-cyan-400"    },
+  hot:    { borderDk: "border-orange-500/40",  bgDk: "bg-orange-500/10",  badgeDk: "bg-orange-500/20 text-orange-300",   badgeLt: "bg-orange-100 text-orange-700",   textColor: "text-orange-400"  },
 };
 
-function levelColors(level = "medium") {
-  return LEVEL_COLORS[level] ?? LEVEL_COLORS.medium;
-}
-
-function densityTheme(level = "medium") {
-  return DENSITY_THEME[level] ?? DENSITY_THEME.medium;
-}
+function getDensity(level) { return DENSITY[level] ?? DENSITY.medium; }
+function getLevel(level)   { return LEVEL_COLORS[level] ?? LEVEL_COLORS.medium; }
 
 // ─────────────────────────────────────────────────────────────
-// Sub-components
+// Sub-components — all theme-aware via `isDark` prop
 // ─────────────────────────────────────────────────────────────
 
-/** Colored pill badge */
-function Badge({ label, level }) {
-  const c = levelColors(level);
+/** Generic level pill badge */
+function Badge({ label, level, isDark }) {
+  const c = getLevel(level);
   return (
-    <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide ${c.badge}`}>
+    <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide
+      ${isDark ? c.badgeDk : c.badgeLt}`}>
       {label}
     </span>
   );
 }
 
-/** Density-themed pill badge */
-function DensityBadge({ level }) {
-  const t = densityTheme(level);
+/** Density-specific pill badge */
+function DensityBadge({ level, isDark }) {
+  const d = getDensity(level);
   return (
-    <span
-      className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-widest ${t.badge}`}
-    >
-      {t.label}
+    <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-widest
+      ${isDark ? d.badgeDk : d.badgeLt}`}>
+      {d.densityLabel}
     </span>
   );
 }
 
-/** System Status Badge — top-right dot indicator */
-function StatusBadge({ level }) {
-  const t = densityTheme(level);
-  const labels = { low: "Nominal", medium: "Elevated", high: "Critical" };
+/** Animated dot + label status indicator */
+function StatusBadge({ level, isDark }) {
+  const d = getDensity(level);
   return (
     <div className="flex items-center gap-1.5">
       <span className="relative flex h-2.5 w-2.5">
-        <span
-          className={`dot-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${t.dotColor}`}
-        />
-        <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${t.dotColor}`} />
+        <span className={`dot-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${d.dotColor}`} />
+        <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${d.dotColor}`} />
       </span>
-      <span className={`text-xs font-semibold uppercase tracking-wider ${t.text}`}>
-        {labels[level] ?? level}
+      <span className={`text-xs font-semibold uppercase tracking-wider ${d.textColor}`}>
+        {d.statusLabel}
       </span>
     </div>
   );
 }
 
-/** Stat block with label / value / sub-label hierarchy */
-function StatBlock({ icon, label, value, sub }) {
+/** Three-level typography: label / value / sub */
+function StatBlock({ icon, label, value, sub, isDark }) {
+  const labelCls = isDark ? "text-slate-400" : "text-slate-500";
+  const valueCls = isDark ? "text-white"     : "text-slate-900";
+  const subCls   = isDark ? "text-slate-400" : "text-slate-500";
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-sm text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+      <span className={`text-sm uppercase tracking-wider flex items-center gap-1.5 ${labelCls}`}>
         <span>{icon}</span>{label}
       </span>
-      <span className="text-xl font-semibold text-white">{value}</span>
-      {sub && <span className="text-xs text-slate-400">{sub}</span>}
+      <span className={`text-2xl font-bold ${valueCls}`}>{value}</span>
+      {sub && <span className={`text-xs ${subCls}`}>{sub}</span>}
+    </div>
+  );
+}
+
+/** Section card wrapper — glassmorphism */
+function GlassCard({ children, className = "", isDark, extraBorder = "" }) {
+  const glass = isDark ? "glass-dark" : "glass-light";
+  const border = extraBorder || (isDark ? "border-white/10" : "border-white/80");
+  return (
+    <div className={`rounded-2xl ${glass} border ${border} p-5 card-hover transition-all duration-300 ease-in-out hover:scale-[1.02] animate-fade-in ${className}`}>
+      {children}
     </div>
   );
 }
 
 /** Section heading */
-function SectionLabel({ children }) {
+function SectionLabel({ children, isDark }) {
+  const cls = isDark ? "text-slate-400" : "text-slate-500";
   return (
-    <p className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">
+    <p className={`text-sm font-semibold uppercase tracking-wider mb-3 ${cls}`}>
       {children}
     </p>
-  );
-}
-
-/** Group card wrapper with hover lift */
-function GroupCard({ children, className = "" }) {
-  return (
-    <div
-      className={`rounded-2xl border border-slate-700/50 bg-slate-800/50 p-5 card-hover ${className}`}
-    >
-      {children}
-    </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
 // Main Component
 // ─────────────────────────────────────────────────────────────
-export default function StatusCard({ data }) {
+export default function StatusCard({ data, theme = "dark" }) {
   if (!data) return null;
 
   const {
@@ -155,152 +162,152 @@ export default function StatusCard({ data }) {
     timestamp,
   } = data;
 
-  const dt        = densityTheme(crowd_density.level);
-  const riskColors = levelColors(ai_insights?.risk_level ?? "medium");
-  const time       = new Date(timestamp * 1000).toLocaleTimeString();
+  const isDark      = theme === "dark";
+  const d           = getDensity(crowd_density.level);
+  const riskLevel   = getLevel(ai_insights?.risk_level ?? "medium");
+  const time        = new Date(timestamp * 1000).toLocaleTimeString();
 
-  // Filter high-severity alerts for special treatment
-  const highAlerts   = alerts.filter((a) => a.severity === "high");
-  const otherAlerts  = alerts.filter((a) => a.severity !== "high");
+  const highAlerts  = alerts.filter((a) => a.severity === "high");
+  const otherAlerts = alerts.filter((a) => a.severity !== "high");
+
+  // Text tokens
+  const primaryText   = isDark ? "text-white"     : "text-slate-900";
+  const secondaryText = isDark ? "text-slate-400"  : "text-slate-500";
+  const monoText      = isDark ? "text-slate-600"  : "text-slate-400";
+  const trackBg       = isDark ? "bg-slate-900"    : "bg-slate-200";
+  const routeStopBg   = isDark
+    ? "bg-slate-700/80 text-slate-300 hover:bg-slate-600"
+    : "bg-slate-100 text-slate-700 hover:bg-slate-200";
 
   return (
-    <div className="w-full max-w-3xl mx-auto flex flex-col gap-5">
+    <div className="w-full max-w-4xl mx-auto flex flex-col gap-6">
 
-      {/* ── Header bar ───────────────────────────────────────── */}
-      <div className="flex items-center justify-between">
+      {/* ── Live indicator row ─────────────────────────────────── */}
+      <div className="flex items-center justify-between animate-fade-in">
         <div className="flex items-center gap-2">
           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
           </span>
-          <span className="text-sm text-slate-400">Live · updated {time}</span>
+          <span className={`text-sm ${secondaryText}`}>Live · updated {time}</span>
         </div>
-        <span className="text-xs text-slate-600 font-mono">
+        <span className={`text-xs font-mono ${monoText}`}>
           {location.lat.toFixed(4)}, {location.lng.toFixed(4)}
         </span>
       </div>
 
-      {/* ── GROUP 1 · Crowd Density ───────────────────────────── */}
+      {/* ── GRID START ────────────────────────────────────────────
+          Full-width: Crowd Density
+          2-col below: Waiting Time | Route Info
+          2-col below: Weather | Traffic
+      ────────────────────────────────────────────────────────── */}
+
+      {/* ── GROUP 1 · Crowd Density (full width, gradient bg) ───── */}
       <div
-        className={`rounded-2xl border p-5 card-hover transition-all duration-300 ease-in-out
-          ${dt.bg} ${dt.border} ${dt.glow}`}
+        className={`rounded-2xl border p-6 card-hover transition-all duration-300 ease-in-out hover:scale-[1.01] animate-fade-in
+          ${isDark ? d.borderDk : d.borderLt}
+          ${isDark ? d.bgDk : d.bgLt}
+          ${d.glow}
+          bg-gradient-to-br from-violet-500/10 to-blue-500/10`}
       >
-        {/* Card header row */}
-        <div className="flex items-start justify-between mb-4">
+        {/* Card header */}
+        <div className="flex items-start justify-between mb-5">
           <div>
-            <p className="text-lg font-bold text-white mb-0.5">Crowd Density</p>
-            <p className="text-sm text-slate-400">Real-time occupancy level</p>
+            <p className={`text-lg font-semibold mb-0.5 ${primaryText}`}>Crowd Density</p>
+            <p className={`text-sm ${secondaryText}`}>Real-time occupancy level</p>
           </div>
-          <div className="flex flex-col items-end gap-1.5">
-            {/* System Status Badge */}
-            <StatusBadge level={crowd_density.level} />
-            <DensityBadge level={crowd_density.level} />
+          <div className="flex flex-col items-end gap-2">
+            <StatusBadge level={crowd_density.level} isDark={isDark} />
+            <DensityBadge level={crowd_density.level} isDark={isDark} />
           </div>
         </div>
 
         {/* Density bar */}
-        <div className="mb-5">
-          <div className="flex justify-between text-xs text-slate-500 mb-1.5">
+        <div className="mb-6">
+          <div className={`flex justify-between text-xs mb-1.5 ${secondaryText}`}>
             <span>0%</span><span>100%</span>
           </div>
-          <div className="h-3 rounded-full bg-slate-900 overflow-hidden">
+          <div className={`h-3 rounded-full overflow-hidden ${trackBg}`}>
             <div
-              className={`h-full rounded-full transition-all duration-700 ease-in-out ${dt.barBg}`}
+              className={`h-full rounded-full transition-all duration-700 ease-in-out ${d.barColor}`}
               style={{ width: `${crowd_density.value * 100}%` }}
             />
           </div>
         </div>
 
-        {/* Stats grid — 3 cols */}
+        {/* 3-col stats */}
         <div className="grid grid-cols-3 gap-4">
-          <StatBlock
-            icon="📊"
-            label="Density"
-            value={`${Math.round(crowd_density.value * 100)}%`}
-          />
-          <StatBlock
-            icon="⏱️"
-            label="Wait"
-            value={`${waiting_time.minutes} min`}
-          />
-          <StatBlock
-            icon="🛤️"
-            label="Est. Time"
-            value={`${route.estimated_time} min`}
-            sub={route.is_accessible ? "♿ Accessible" : ""}
-          />
+          <StatBlock icon="📊" label="Density"  value={`${Math.round(crowd_density.value * 100)}%`} isDark={isDark} />
+          <StatBlock icon="⏱️" label="Wait"     value={`${waiting_time.minutes} min`} isDark={isDark} />
+          <StatBlock icon="🛤️" label="Est. Time" value={`${route.estimated_time} min`} sub={route.is_accessible ? "♿ Accessible" : ""} isDark={isDark} />
         </div>
       </div>
 
-      {/* ── GROUP 2 · Waiting Time + Route Info (responsive 2-col) ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* ── GROUP 2 · Waiting Time + Route Info (2-col) ─────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        {/* Waiting Time card */}
-        <GroupCard>
-          <SectionLabel>⏳ Waiting Time</SectionLabel>
-          <div className="flex items-end gap-2">
-            <span className="text-xl font-semibold text-white">
-              {waiting_time.minutes} min
-            </span>
-            <span className="text-sm text-slate-400 mb-0.5">estimated wait</span>
+        {/* Waiting Time */}
+        <GlassCard isDark={isDark}>
+          <SectionLabel isDark={isDark}>⏳ Waiting Time</SectionLabel>
+          <div className="flex items-end gap-2 mb-4">
+            <span className={`text-2xl font-bold ${primaryText}`}>{waiting_time.minutes} min</span>
+            <span className={`text-sm mb-0.5 ${secondaryText}`}>estimated wait</span>
           </div>
-          <div className="mt-3 h-2 rounded-full bg-slate-900 overflow-hidden">
+          <div className={`h-2 rounded-full overflow-hidden ${trackBg}`}>
             <div
               className="h-full rounded-full bg-violet-500 transition-all duration-700 ease-in-out"
               style={{ width: `${Math.min((waiting_time.minutes / 30) * 100, 100)}%` }}
             />
           </div>
-        </GroupCard>
+        </GlassCard>
 
-        {/* Route Info card */}
-        <GroupCard>
-          <SectionLabel>🛤️ Route Info</SectionLabel>
-          <div className="flex items-end gap-2 mb-3">
-            <span className="text-xl font-semibold text-white">
-              {route.estimated_time} min
-            </span>
-            <span className="text-sm text-slate-400 mb-0.5">ETA</span>
+        {/* Route Info */}
+        <GlassCard isDark={isDark}>
+          <SectionLabel isDark={isDark}>🛤️ Route Info</SectionLabel>
+          <div className="flex items-end gap-2 mb-4">
+            <span className={`text-2xl font-bold ${primaryText}`}>{route.estimated_time} min</span>
+            <span className={`text-sm mb-0.5 ${secondaryText}`}>ETA</span>
           </div>
           {route.is_accessible && (
-            <span className="inline-block bg-violet-500/20 text-violet-300 text-xs px-2.5 py-0.5 rounded-full font-semibold">
+            <span className="inline-block bg-violet-500/20 text-violet-300 text-xs px-3 py-1 rounded-full font-semibold">
               ♿ Accessible Route
             </span>
           )}
-        </GroupCard>
+        </GlassCard>
 
       </div>
 
-      {/* ── GROUP 3 · Conditions (Weather + Traffic) ─────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <GroupCard>
-          <SectionLabel>🌤 Weather</SectionLabel>
-          <Badge label={metadata.weather} level={metadata.weather} />
-        </GroupCard>
-        <GroupCard>
-          <SectionLabel>🚦 Traffic</SectionLabel>
-          <Badge label={metadata.traffic} level={metadata.traffic} />
-        </GroupCard>
+      {/* ── GROUP 3 · Weather + Traffic (2-col) ─────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <GlassCard isDark={isDark}>
+          <SectionLabel isDark={isDark}>🌤 Weather</SectionLabel>
+          <Badge label={metadata.weather} level={metadata.weather} isDark={isDark} />
+        </GlassCard>
+        <GlassCard isDark={isDark}>
+          <SectionLabel isDark={isDark}>🚦 Traffic</SectionLabel>
+          <Badge label={metadata.traffic} level={metadata.traffic} isDark={isDark} />
+        </GlassCard>
       </div>
 
-      {/* ── Recommended Route path ────────────────────────────── */}
-      <GroupCard>
-        <SectionLabel>📍 Recommended Route</SectionLabel>
-        <div className="flex items-center gap-1 flex-wrap">
+      {/* ── Recommended Route ─────────────────────────────────────── */}
+      <GlassCard isDark={isDark}>
+        <SectionLabel isDark={isDark}>📍 Recommended Route</SectionLabel>
+        <div className="flex items-center gap-1.5 flex-wrap">
           {route.path.map((stop, i) => (
-            <div key={stop} className="flex items-center gap-1">
-              <span className="bg-slate-700/80 text-slate-300 text-xs px-3 py-1 rounded-full transition-all duration-300 ease-in-out hover:bg-slate-600">
+            <div key={stop} className="flex items-center gap-1.5">
+              <span className={`text-xs px-3 py-1.5 rounded-full transition-all duration-300 ease-in-out cursor-default ${routeStopBg}`}>
                 {stop}
               </span>
               {i < route.path.length - 1 && (
-                <span className="text-slate-600 text-xs">→</span>
+                <span className={`text-xs ${secondaryText}`}>→</span>
               )}
             </div>
           ))}
         </div>
-      </GroupCard>
+      </GlassCard>
 
-      {/* ── Map Visualization ─────────────────────────────────── */}
-      <div className="rounded-2xl overflow-hidden border border-slate-700/50 card-hover">
+      {/* ── Map Visualization ─────────────────────────────────────── */}
+      <div className={`rounded-2xl overflow-hidden border card-hover animate-fade-in ${isDark ? "border-white/10" : "border-slate-200"}`}>
         <MapView
           lat={location.lat}
           lng={location.lng}
@@ -308,23 +315,24 @@ export default function StatusCard({ data }) {
         />
       </div>
 
-      {/* ── GROUP 4 · AI Insights ─────────────────────────────── */}
+      {/* ── GROUP 4 · AI Insights (full width) ───────────────────── */}
       {ai_insights && (
         <div
-          className={`rounded-2xl border p-5 card-hover transition-all duration-300 ease-in-out
-            ${riskColors.bg} ${riskColors.border}`}
+          className={`rounded-2xl border p-6 card-hover transition-all duration-300 ease-in-out hover:scale-[1.01] animate-fade-in
+            bg-gradient-to-br from-violet-500/10 to-blue-500/10
+            ${isDark ? `${riskLevel.borderDk} ${riskLevel.bgDk}` : "border-slate-200 bg-white/90"}`}
         >
-          <div className="flex items-start justify-between mb-3">
-            <p className="text-lg font-bold text-white">🤖 AI Insights</p>
-            <Badge label={`Risk: ${ai_insights.risk_level}`} level={ai_insights.risk_level} />
+          <div className="flex items-start justify-between mb-4">
+            <p className={`text-lg font-semibold ${primaryText}`}>🤖 AI Insights</p>
+            <Badge label={`Risk: ${ai_insights.risk_level}`} level={ai_insights.risk_level} isDark={isDark} />
           </div>
-          <p className="text-sm text-slate-300 mb-4 italic leading-relaxed">
+          <p className={`text-sm mb-4 italic leading-relaxed ${secondaryText}`}>
             &ldquo;{ai_insights.alert_message}&rdquo;
           </p>
           <ul className="space-y-2">
             {ai_insights.recommendations.map((rec, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                <span className={`mt-0.5 text-xs ${riskColors.text}`}>▸</span>
+              <li key={i} className={`flex items-start gap-2 text-sm ${isDark ? "text-slate-300" : "text-slate-600"}`}>
+                <span className={`mt-0.5 text-xs ${riskLevel.textColor}`}>▸</span>
                 {rec}
               </li>
             ))}
@@ -332,52 +340,49 @@ export default function StatusCard({ data }) {
         </div>
       )}
 
-      {/* ── Active Alerts ─────────────────────────────────────── */}
+      {/* ── Active Alerts ─────────────────────────────────────────── */}
       {alerts.length > 0 && (
-        <div className="flex flex-col gap-3">
-          <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+        <div className="flex flex-col gap-4 animate-fade-in">
+          <p className={`text-sm font-semibold uppercase tracking-wider ${secondaryText}`}>
             🚨 Active Alerts
           </p>
 
-          {/* High-severity alerts — pulsing red border */}
+          {/* High-severity: red glow pulse */}
           {highAlerts.map((alert, i) => (
             <div
               key={`high-${i}`}
-              className="rounded-2xl border border-[#ef4444]/60 bg-[#ef4444]/10 p-4 alert-pulse transition-all duration-300 ease-in-out hover:scale-[1.02]"
+              className="rounded-2xl border border-rose-500/60 bg-rose-500/10 p-5 alert-pulse transition-all duration-300 ease-in-out hover:scale-[1.02]"
             >
               <div className="flex items-start gap-3">
-                <div className="flex-shrink-0">
-                  <span className="relative flex h-2.5 w-2.5 mt-1">
+                <div className="flex-shrink-0 mt-0.5">
+                  <span className="relative flex h-3 w-3">
                     <span className="dot-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge label={alert.severity} level="high" />
-                    <span className="text-xs text-slate-500 uppercase tracking-wider">High Severity</span>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Badge label="HIGH" level="high" isDark={isDark} />
+                    <span className={`text-xs uppercase tracking-wider ${secondaryText}`}>Critical Severity</span>
                   </div>
-                  <p className="text-sm font-semibold text-red-200">{alert.message}</p>
+                  <p className="text-sm font-semibold text-rose-200">{alert.message}</p>
                 </div>
               </div>
             </div>
           ))}
 
-          {/* Other alerts — standard style */}
+          {/* Other alerts: standard glass card */}
           {otherAlerts.map((alert, i) => (
-            <div
-              key={`other-${i}`}
-              className="rounded-2xl border border-slate-700/50 bg-slate-800/60 p-4 card-hover transition-all duration-300 ease-in-out hover:scale-[1.02]"
-            >
+            <GlassCard key={`other-${i}`} isDark={isDark}>
               <div className="flex items-start gap-3">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge label={alert.severity} level={alert.severity} />
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Badge label={alert.severity} level={alert.severity} isDark={isDark} />
                   </div>
-                  <p className="text-sm text-slate-300">{alert.message}</p>
+                  <p className={`text-sm ${isDark ? "text-slate-300" : "text-slate-600"}`}>{alert.message}</p>
                 </div>
               </div>
-            </div>
+            </GlassCard>
           ))}
         </div>
       )}

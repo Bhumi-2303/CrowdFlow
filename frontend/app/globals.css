@@ -1,61 +1,116 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────
+   Design Tokens
+───────────────────────────────────────────────────────────── */
 :root {
   --font-inter: "Inter", sans-serif;
 
   /* Density glow tokens */
-  --glow-low:    0 0 20px rgba(34, 197, 94,  0.35);
-  --glow-medium: 0 0 20px rgba(234, 179, 8,  0.35);
-  --glow-high:   0 0 20px rgba(239, 68,  68, 0.35);
+  --glow-low:    0 0 24px rgba(52, 211, 153, 0.40);
+  --glow-medium: 0 0 24px rgba(251, 191, 36, 0.40);
+  --glow-high:   0 0 24px rgba(248, 113, 113, 0.40);
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body {
+html, body {
   font-family: var(--font-inter);
+  scroll-behavior: smooth;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Theme: Dark (default)
+───────────────────────────────────────────────────────────── */
+body.theme-dark {
   background-color: #0a0f1e;
   color: #f1f5f9;
-  scroll-behavior: smooth;
 }
 
-/* ── Scrollbar ─────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0a0f1e; }
-::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #334155; }
+body.theme-dark ::-webkit-scrollbar-track  { background: #0a0f1e; }
+body.theme-dark ::-webkit-scrollbar-thumb  { background: #1e293b; }
+body.theme-dark ::-webkit-scrollbar-thumb:hover { background: #334155; }
 
-/* Selection highlight */
+/* ─────────────────────────────────────────────────────────────
+   Theme: Light
+───────────────────────────────────────────────────────────── */
+body.theme-light {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+body.theme-light ::-webkit-scrollbar-track  { background: #f1f5f9; }
+body.theme-light ::-webkit-scrollbar-thumb  { background: #cbd5e1; }
+body.theme-light ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Shared scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { border-radius: 3px; }
+
+/* Selection */
 ::selection { background: rgba(139, 92, 246, 0.35); }
 
-/* ── Density glow helpers ─────────────────────────────── */
-.glow-low    { box-shadow: var(--glow-low); }
+/* ─────────────────────────────────────────────────────────────
+   Glassmorphism card helpers
+───────────────────────────────────────────────────────────── */
+.glass-dark {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.80);
+  box-shadow: 0 4px 24px rgba(148, 163, 184, 0.20);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Density glow utilities
+───────────────────────────────────────────────────────────── */
+.glow-low    { box-shadow: var(--glow-low);    }
 .glow-medium { box-shadow: var(--glow-medium); }
-.glow-high   { box-shadow: var(--glow-high); }
+.glow-high   { box-shadow: var(--glow-high);   }
 
-/* ── Animated alert pulse ─────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   Animations
+───────────────────────────────────────────────────────────── */
+
+/* Fade-in on mount */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+.animate-fade-in {
+  animation: fade-in 400ms ease-out both;
+}
+
+/* Alert glow pulse */
 @keyframes alert-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55); }
-  50%       { box-shadow: 0 0 16px 4px rgba(239, 68, 68, 0.20); }
+  0%, 100% { box-shadow: 0 0 0   0   rgba(239, 68, 68, 0.55); }
+  50%       { box-shadow: 0 0 20px 6px rgba(239, 68, 68, 0.22); }
 }
+.alert-pulse { animation: alert-pulse 2s ease-in-out infinite; }
 
-.alert-pulse {
-  animation: alert-pulse 2s ease-in-out infinite;
-}
-
-/* ── Status dot pulse ─────────────────────────────────── */
+/* Status dot ping */
 @keyframes dot-ping {
-  0%       { transform: scale(1); opacity: 0.9; }
-  75%, 100% { transform: scale(2); opacity: 0; }
+  0%        { transform: scale(1); opacity: 0.9; }
+  75%, 100% { transform: scale(2); opacity: 0;   }
 }
 .dot-ping { animation: dot-ping 1.5s ease-out infinite; }
 
-/* ── Card hover lift ──────────────────────────────────── */
+/* Card hover lift */
 .card-hover {
   transition: transform 300ms ease-in-out, box-shadow 300ms ease-in-out;
 }
-.card-hover:hover {
-  transform: scale(1.015);
+.card-hover:hover { transform: scale(1.018); }
+
+/* Theme toggle icon swap */
+.theme-icon-enter {
+  animation: fade-in 200ms ease-out both;
 }
