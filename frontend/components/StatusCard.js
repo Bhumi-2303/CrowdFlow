@@ -145,6 +145,43 @@ function SectionLabel({ children, isDark }) {
   );
 }
 
+/** Predictive Intelligence Card */
+function PredictionCard({ prediction, isDark }) {
+  if (!prediction) return null;
+  const { value, level, recommendation, time_horizon } = prediction;
+  const isHigh = level === "high";
+
+  // If high: red glowing card, bold warning text
+  const extraCls = isHigh ? `alert-pulse ${isDark ? "border-rose-500/60 bg-rose-500/10" : "border-rose-400 bg-rose-50"}` : "";
+  const textCls = isHigh ? "text-rose-500 font-extrabold" : (isDark ? "text-slate-300" : "text-slate-700");
+
+  return (
+    <GlassCard isDark={isDark} className={`flex flex-col gap-3 ${extraCls}`}>
+      <div className="flex items-center justify-between">
+        <SectionLabel isDark={isDark}>🔮 Predicted Crowd ({time_horizon})</SectionLabel>
+        <span className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold uppercase tracking-tighter ${isDark ? "bg-violet-500/20 text-violet-400" : "bg-violet-100 text-violet-600"}`}>
+          AI Prediction
+        </span>
+      </div>
+
+      <div className="flex items-center gap-6">
+        <div className="flex flex-col">
+          <span className={`text-3xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+            {Math.round(value * 100)}%
+          </span>
+          <Badge label={level} level={level} isDark={isDark} />
+        </div>
+        
+        <div className="flex-1 border-l border-slate-700/30 pl-6">
+          <p className={`text-sm leading-snug ${textCls}`}>
+            {recommendation}
+          </p>
+        </div>
+      </div>
+    </GlassCard>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────
 // Main Component
 // ─────────────────────────────────────────────────────────────
@@ -157,6 +194,7 @@ export default function StatusCard({ data, theme = "dark" }) {
     route,
     alerts,
     ai_insights,
+    prediction,
     metadata,
     location,
     timestamp,
@@ -242,6 +280,9 @@ export default function StatusCard({ data, theme = "dark" }) {
           <StatBlock icon="🛤️" label="Est. Time" value={`${route.estimated_time} min`} sub={route.is_accessible ? "♿ Accessible" : ""} isDark={isDark} />
         </div>
       </div>
+
+      {/* ── Predictive Intelligence ─────────────────────────────── */}
+      <PredictionCard prediction={prediction} isDark={isDark} />
 
       {/* ── GROUP 2 · Waiting Time + Route Info (2-col) ─────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

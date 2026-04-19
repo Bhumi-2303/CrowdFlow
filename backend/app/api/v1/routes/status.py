@@ -82,6 +82,33 @@ def get_status(lat: float, lng: float) -> dict:
     }
     ai_insights = generate_ai_insights(ai_context)
 
+    # ── Predictive Intelligence ──────────────────────────────────────────
+    predicted_density = density
+    if weather == "hot":
+        predicted_density += 0.1
+    if traffic == "high":
+        predicted_density += 0.15
+    
+    predicted_density += random.uniform(-0.05, 0.05)
+    predicted_density = round(min(max(predicted_density, 0.0), 1.0), 2)
+
+    if predicted_density < 0.4:
+        prediction_level = "low"
+        recommendation = "Safe to proceed."
+    elif predicted_density <= 0.7:
+        prediction_level = "medium"
+        recommendation = "Crowd increasing. Plan accordingly."
+    else:
+        prediction_level = "high"
+        recommendation = "Avoid this route. Use alternate path."
+
+    prediction = {
+        "value": predicted_density,
+        "level": prediction_level,
+        "recommendation": recommendation,
+        "time_horizon": "10 min"
+    }
+
     return {
         "timestamp": current_time,
         "location": {
@@ -98,6 +125,7 @@ def get_status(lat: float, lng: float) -> dict:
         "route": route,
         "alerts": alerts,
         "ai_insights": ai_insights,
+        "prediction": prediction,
         "metadata": {
             "source": "enhanced-simulation",
             "weather": weather,
