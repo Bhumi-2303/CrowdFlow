@@ -22,10 +22,12 @@ const Circle = dynamic(
   { ssr: false }
 );
 
-export default function MapView({ lat, lng, density }) {
-  const getColor = () => {
-    if (density < 0.3) return "#22c55e"; // green
-    if (density < 0.7) return "#eab308"; // yellow
+import React from "react";
+
+export default function MapView({ lat, lng, density, zones = [] }) {
+  const getColor = (val) => {
+    if (val < 0.3) return "#22c55e"; // green
+    if (val < 0.7) return "#eab308"; // yellow
     return "#ef4444"; // red
   };
 
@@ -34,24 +36,38 @@ export default function MapView({ lat, lng, density }) {
       <GoogleMap
         mapContainerStyle={{
           width: "100%",
-          height: "300px",
+          height: "400px",
           borderRadius: "16px",
         }}
         center={{ lat, lng }}
-        zoom={15}
+        zoom={16}
       >
-        <Marker position={{ lat, lng }} />
-        <Circle
-          center={{ lat, lng }}
-          radius={200}
-          options={{
-            fillColor: getColor(),
-            fillOpacity: 0.4,
-            strokeColor: getColor(),
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-          }}
+        {/* Overall Venue Marker */}
+        <Marker 
+          position={{ lat, lng }} 
+          title="Main Venue"
         />
+
+        {/* Zone-specific indicators */}
+        {zones.map((zone, i) => (
+          <React.Fragment key={i}>
+            <Marker
+              position={zone.location}
+              title={zone.name}
+            />
+            <Circle
+              center={zone.location}
+              radius={80}
+              options={{
+                fillColor: getColor(zone.crowd_density.value),
+                fillOpacity: 0.4,
+                strokeColor: getColor(zone.crowd_density.value),
+                strokeOpacity: 0.7,
+                strokeWeight: 2,
+              }}
+            />
+          </React.Fragment>
+        ))}
       </GoogleMap>
     </LoadScript>
   );

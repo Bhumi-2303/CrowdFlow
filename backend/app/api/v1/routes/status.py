@@ -33,26 +33,57 @@ def get_status(lat: float, lng: float) -> dict:
     weather = get_weather_condition(lat, lng)
     traffic = get_traffic_level(lat, lng)
 
-    # ── Crowd Density (context-aware) ───────────────────────────────────────
-    base_density = random.uniform(0.2, 0.7)
+    # ── Zone Intelligence (Multi-zone Support) ──────────────────────────────
+    zone_names = ["Gate A", "Gate B", "Food Court", "Parking", "Exit Gate"]
+    zones = []
+    
+    for name in zone_names:
+        # Independent density for each zone
+        z_base = random.uniform(0.15, 0.75)
+        if weather == "hot": z_base += 0.05
+        if traffic == "high": z_base += 0.1
+        z_density = round(min(z_base, 1.0), 2)
+        
+        z_level = "low" if z_density < 0.3 else "medium" if z_density < 0.7 else "high"
+        z_wait = int(z_density * 45)
+        
+        # Zone-specific prediction
+        z_pred_val = round(min(max(z_density + random.uniform(-0.05, 0.15), 0.0), 1.0), 2)
+        z_pred_level = "low" if z_pred_val < 0.4 else "medium" if z_pred_val <= 0.7 else "high"
+        
+        z_rec = "Safe to proceed."
+        if z_pred_level == "high":
+            z_rec = "Avoid this route. Use alternate path."
+        elif z_pred_level == "medium":
+            z_rec = "Crowd increasing. Plan accordingly."
+            
+        zones.append({
+            "name": name,
+            "location": {
+                "lat": lat + random.uniform(-0.001, 0.001),
+                "lng": lng + random.uniform(-0.001, 0.001),
+            },
+            "crowd_density": {
+                "value": z_density,
+                "level": z_level,
+            },
+            "waiting_time": {
+                "minutes": z_wait,
+            },
+            "prediction": {
+                "value": z_pred_val,
+                "level": z_pred_level,
+                "recommendation": z_rec,
+            }
+        })
 
-    if weather == "hot":
-        base_density += 0.1
-
-    if traffic == "high":
-        base_density += 0.2
-
-    density = round(min(base_density, 1.0), 2)
-
-    if density < 0.3:
-        density_level = "low"
-    elif density < 0.7:
-        density_level = "medium"
-    else:
-        density_level = "high"
-
-    # ── Wait Time ──────────────────────────────────────────────────────────
-    wait_time = int(density * 30)
+    # Calculate overall averages for top-level fields
+    avg_density = round(sum(z["crowd_density"]["value"] for z in zones) / len(zones), 2)
+    avg_wait = int(sum(z["waiting_time"]["minutes"] for z in zones) / len(zones))
+    
+    density = avg_density
+    density_level = "low" if density < 0.3 else "medium" if density < 0.7 else "high"
+    wait_time = avg_wait
 
     # ── Route ──────────────────────────────────────────────────────────────
     route = {
@@ -63,12 +94,12 @@ def get_status(lat: float, lng: float) -> dict:
 
     # ── Alerts ─────────────────────────────────────────────────────────────
     alerts = []
-    if density > 0.75:
+    if any(z["crowd_density"]["value"] > 0.8 for z in zones):
         alerts.append(
             {
                 "type": "crowd",
                 "severity": "high",
-                "message": "High crowd density detected",
+                "message": "High crowd density detected in specific zones",
             }
         )
 
@@ -82,7 +113,8 @@ def get_status(lat: float, lng: float) -> dict:
     }
     ai_insights = generate_ai_insights(ai_context)
 
-    # ── Predictive Intelligence ──────────────────────────────────────────
+    # ── Predictive Intelligence (Overall) ──────────────────────────────────
+    # Existing overall prediction logic maintained for backward compatibility
     predicted_density = density
     if weather == "hot":
         predicted_density += 0.1
@@ -122,12 +154,13 @@ def get_status(lat: float, lng: float) -> dict:
         "waiting_time": {
             "minutes": wait_time,
         },
+        "zones": zones,
         "route": route,
         "alerts": alerts,
         "ai_insights": ai_insights,
         "prediction": prediction,
         "metadata": {
-            "source": "enhanced-simulation",
+            "source": "multi-zone-intelligence",
             "weather": weather,
             "traffic": traffic,
         },

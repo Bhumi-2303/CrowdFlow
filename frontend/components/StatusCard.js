@@ -182,6 +182,42 @@ function PredictionCard({ prediction, isDark }) {
   );
 }
 
+/** Individual Zone card */
+function ZoneCard({ zone, isDark }) {
+  const { name, crowd_density, waiting_time, prediction } = zone;
+  const isHighest = crowd_density.value >= 0.8;
+  const border = isHighest && !isDark ? "border-rose-300" : (isHighest && isDark ? "border-rose-500/50" : "");
+  const shadow = isHighest ? (isDark ? "shadow-[0_0_15px_rgba(244,63,94,0.2)]" : "shadow-md") : "";
+
+  return (
+    <div className={`rounded-2xl border p-5 transition-all duration-400 hover:scale-[1.02] cursor-default animate-fade-in
+      ${isDark ? "bg-slate-800/40 border-white/5 hover:bg-slate-800/60" : "bg-white border-slate-200 hover:shadow-lg"}
+      ${border} ${shadow}`}>
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h4 className={`text-base font-bold mb-1 ${isDark ? "text-white" : "text-slate-900"}`}>
+            {name}
+            {isHighest && <span className="ml-2 text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded-md uppercase tracking-tighter">Peak</span>}
+          </h4>
+          <p className={`text-[10px] font-medium uppercase tracking-widest ${isDark ? "text-slate-500" : "text-slate-400"}`}>Real-time Monitoring</p>
+        </div>
+        <StatusBadge level={crowd_density.level} isDark={isDark} />
+      </div>
+      
+      <div className="grid grid-cols-2 gap-6">
+        <div className="flex flex-col gap-1">
+          <span className={`text-[10px] uppercase tracking-wider font-semibold ${isDark ? "text-slate-500" : "text-slate-400"}`}>Wait Time</span>
+          <span className={`text-xl font-bold ${isDark ? "text-slate-200" : "text-slate-700"}`}>{waiting_time.minutes} min</span>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className={`text-[10px] uppercase tracking-wider font-semibold ${isDark ? "text-slate-500" : "text-slate-400"}`}>Predicted</span>
+          <Badge label={prediction.level} level={prediction.level} isDark={isDark} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────
 // Main Component
 // ─────────────────────────────────────────────────────────────
@@ -195,6 +231,7 @@ export default function StatusCard({ data, theme = "dark" }) {
     alerts,
     ai_insights,
     prediction,
+    zones,
     metadata,
     location,
     timestamp,
@@ -353,8 +390,26 @@ export default function StatusCard({ data, theme = "dark" }) {
           lat={location.lat}
           lng={location.lng}
           density={crowd_density.value}
+          zones={zones}
         />
       </div>
+
+      {/* ── Zone Intelligence ─────────────────────────────────────── */}
+      {zones && zones.length > 0 && (
+        <div className="flex flex-col gap-4 animate-fade-in">
+          <div className="flex items-center justify-between">
+            <SectionLabel isDark={isDark}>📍 Zone Intelligence</SectionLabel>
+            <span className={`text-[10px] font-bold uppercase tracking-widest ${isDark ? "text-slate-600" : "text-slate-300"}`}>
+              {zones.length} Active Zones
+            </span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {zones.map((zone, i) => (
+              <ZoneCard key={i} zone={zone} isDark={isDark} />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── GROUP 4 · AI Insights (full width) ───────────────────── */}
       {ai_insights && (
