@@ -8,46 +8,46 @@ import MapView from "./MapView";
 // ─────────────────────────────────────────────────────────────
 const DENSITY = {
   low: {
-    glow:      "glow-low",
-    borderDk:  "border-emerald-400/40",
-    borderLt:  "border-emerald-500/30",
-    bgDk:      "bg-emerald-400/10",
-    bgLt:      "bg-emerald-50",
+    glow: "glow-low",
+    borderDk: "border-emerald-400/40",
+    borderLt: "border-emerald-500/30",
+    bgDk: "bg-emerald-400/10",
+    bgLt: "bg-emerald-50",
     textColor: "text-emerald-400",
-    barColor:  "bg-emerald-400",
-    badgeDk:   "bg-emerald-400/20 text-emerald-300",
-    badgeLt:   "bg-emerald-100 text-emerald-700",
-    dotColor:  "bg-emerald-400",
+    barColor: "bg-emerald-400",
+    badgeDk: "bg-emerald-400/20 text-emerald-300",
+    badgeLt: "bg-emerald-100 text-emerald-700",
+    dotColor: "bg-emerald-400",
     statusLabel: "Nominal",
     densityLabel: "LOW",
     hex: "#34d399",
   },
   medium: {
-    glow:      "glow-medium",
-    borderDk:  "border-amber-400/40",
-    borderLt:  "border-amber-400/30",
-    bgDk:      "bg-amber-400/10",
-    bgLt:      "bg-amber-50",
+    glow: "glow-medium",
+    borderDk: "border-amber-400/40",
+    borderLt: "border-amber-400/30",
+    bgDk: "bg-amber-400/10",
+    bgLt: "bg-amber-50",
     textColor: "text-amber-400",
-    barColor:  "bg-amber-400",
-    badgeDk:   "bg-amber-400/20 text-amber-300",
-    badgeLt:   "bg-amber-100 text-amber-700",
-    dotColor:  "bg-amber-400",
+    barColor: "bg-amber-400",
+    badgeDk: "bg-amber-400/20 text-amber-300",
+    badgeLt: "bg-amber-100 text-amber-700",
+    dotColor: "bg-amber-400",
     statusLabel: "Elevated",
     densityLabel: "MEDIUM",
     hex: "#fbbf24",
   },
   high: {
-    glow:      "glow-high",
-    borderDk:  "border-rose-500/50",
-    borderLt:  "border-rose-400/40",
-    bgDk:      "bg-rose-500/10",
-    bgLt:      "bg-rose-50",
+    glow: "glow-high",
+    borderDk: "border-rose-500/50",
+    borderLt: "border-rose-400/40",
+    bgDk: "bg-rose-500/10",
+    bgLt: "bg-rose-50",
     textColor: "text-rose-400",
-    barColor:  "bg-rose-500",
-    badgeDk:   "bg-rose-500/20 text-rose-300",
-    badgeLt:   "bg-rose-100 text-rose-700",
-    dotColor:  "bg-rose-500",
+    barColor: "bg-rose-500",
+    badgeDk: "bg-rose-500/20 text-rose-300",
+    badgeLt: "bg-rose-100 text-rose-700",
+    dotColor: "bg-rose-500",
     statusLabel: "Critical",
     densityLabel: "HIGH",
     hex: "#f87171",
@@ -55,16 +55,16 @@ const DENSITY = {
 };
 
 const LEVEL_COLORS = {
-  low:    { borderDk: "border-emerald-500/40", bgDk: "bg-emerald-500/10", badgeDk: "bg-emerald-500/20 text-emerald-300", badgeLt: "bg-emerald-100 text-emerald-700", textColor: "text-emerald-400" },
-  medium: { borderDk: "border-amber-500/40",   bgDk: "bg-amber-500/10",   badgeDk: "bg-amber-500/20 text-amber-300",     badgeLt: "bg-amber-100 text-amber-700",     textColor: "text-amber-400"   },
-  high:   { borderDk: "border-rose-500/40",    bgDk: "bg-rose-500/10",    badgeDk: "bg-rose-500/20 text-rose-300",       badgeLt: "bg-rose-100 text-rose-700",       textColor: "text-rose-400"    },
-  normal: { borderDk: "border-sky-500/40",     bgDk: "bg-sky-500/10",     badgeDk: "bg-sky-500/20 text-sky-300",         badgeLt: "bg-sky-100 text-sky-700",         textColor: "text-sky-400"     },
-  cool:   { borderDk: "border-cyan-500/40",    bgDk: "bg-cyan-500/10",    badgeDk: "bg-cyan-500/20 text-cyan-300",       badgeLt: "bg-cyan-100 text-cyan-700",       textColor: "text-cyan-400"    },
-  hot:    { borderDk: "border-orange-500/40",  bgDk: "bg-orange-500/10",  badgeDk: "bg-orange-500/20 text-orange-300",   badgeLt: "bg-orange-100 text-orange-700",   textColor: "text-orange-400"  },
+  low: { borderDk: "border-emerald-500/40", bgDk: "bg-emerald-500/10", badgeDk: "bg-emerald-500/20 text-emerald-300", badgeLt: "bg-emerald-100 text-emerald-700", textColor: "text-emerald-400" },
+  medium: { borderDk: "border-amber-500/40", bgDk: "bg-amber-500/10", badgeDk: "bg-amber-500/20 text-amber-300", badgeLt: "bg-amber-100 text-amber-700", textColor: "text-amber-400" },
+  high: { borderDk: "border-rose-500/40", bgDk: "bg-rose-500/10", badgeDk: "bg-rose-500/20 text-rose-300", badgeLt: "bg-rose-100 text-rose-700", textColor: "text-rose-400" },
+  normal: { borderDk: "border-sky-500/40", bgDk: "bg-sky-500/10", badgeDk: "bg-sky-500/20 text-sky-300", badgeLt: "bg-sky-100 text-sky-700", textColor: "text-sky-400" },
+  cool: { borderDk: "border-cyan-500/40", bgDk: "bg-cyan-500/10", badgeDk: "bg-cyan-500/20 text-cyan-300", badgeLt: "bg-cyan-100 text-cyan-700", textColor: "text-cyan-400" },
+  hot: { borderDk: "border-orange-500/40", bgDk: "bg-orange-500/10", badgeDk: "bg-orange-500/20 text-orange-300", badgeLt: "bg-orange-100 text-orange-700", textColor: "text-orange-400" },
 };
 
 function getDensity(level) { return DENSITY[level] ?? DENSITY.medium; }
-function getLevel(level)   { return LEVEL_COLORS[level] ?? LEVEL_COLORS.medium; }
+function getLevel(level) { return LEVEL_COLORS[level] ?? LEVEL_COLORS.medium; }
 
 // ─────────────────────────────────────────────────────────────
 // Sub-components — all theme-aware via `isDark` prop
@@ -111,8 +111,8 @@ function StatusBadge({ level, isDark }) {
 /** Three-level typography: label / value / sub */
 function StatBlock({ icon, label, value, sub, isDark }) {
   const labelCls = isDark ? "text-slate-400" : "text-slate-500";
-  const valueCls = isDark ? "text-white"     : "text-slate-900";
-  const subCls   = isDark ? "text-slate-400" : "text-slate-500";
+  const valueCls = isDark ? "text-white" : "text-slate-900";
+  const subCls = isDark ? "text-slate-400" : "text-slate-500";
   return (
     <div className="flex flex-col gap-1">
       <span className={`text-sm uppercase tracking-wider flex items-center gap-1.5 ${labelCls}`}>
@@ -171,7 +171,7 @@ function PredictionCard({ prediction, isDark }) {
           </span>
           <Badge label={level} level={level} isDark={isDark} />
         </div>
-        
+
         <div className="flex-1 border-l border-slate-700/30 pl-6">
           <p className={`text-sm leading-snug ${textCls}`}>
             {recommendation}
@@ -203,7 +203,7 @@ function ZoneCard({ zone, isDark }) {
         </div>
         <StatusBadge level={crowd_density.level} isDark={isDark} />
       </div>
-      
+
       <div className="grid grid-cols-2 gap-6">
         <div className="flex flex-col gap-1">
           <span className={`text-[10px] uppercase tracking-wider font-semibold ${isDark ? "text-slate-500" : "text-slate-400"}`}>Wait Time</span>
@@ -237,20 +237,20 @@ export default function StatusCard({ data, theme = "dark" }) {
     timestamp,
   } = data;
 
-  const isDark      = theme === "dark";
-  const d           = getDensity(crowd_density.level);
-  const riskLevel   = getLevel(ai_insights?.risk_level ?? "medium");
-  const time        = new Date(timestamp * 1000).toLocaleTimeString();
+  const isDark = theme === "dark";
+  const d = getDensity(crowd_density.level);
+  const riskLevel = getLevel(ai_insights?.risk_level ?? "medium");
+  const time = new Date(timestamp * 1000).toLocaleTimeString();
 
-  const highAlerts  = alerts.filter((a) => a.severity === "high");
+  const highAlerts = alerts.filter((a) => a.severity === "high");
   const otherAlerts = alerts.filter((a) => a.severity !== "high");
 
   // Text tokens
-  const primaryText   = isDark ? "text-white"     : "text-slate-900";
-  const secondaryText = isDark ? "text-slate-400"  : "text-slate-500";
-  const monoText      = isDark ? "text-slate-600"  : "text-slate-400";
-  const trackBg       = isDark ? "bg-slate-900"    : "bg-slate-200";
-  const routeStopBg   = isDark
+  const primaryText = isDark ? "text-white" : "text-slate-900";
+  const secondaryText = isDark ? "text-slate-400" : "text-slate-500";
+  const monoText = isDark ? "text-slate-600" : "text-slate-400";
+  const trackBg = isDark ? "bg-slate-900" : "bg-slate-200";
+  const routeStopBg = isDark
     ? "bg-slate-700/80 text-slate-300 hover:bg-slate-600"
     : "bg-slate-100 text-slate-700 hover:bg-slate-200";
 
@@ -312,8 +312,8 @@ export default function StatusCard({ data, theme = "dark" }) {
 
         {/* 3-col stats */}
         <div className="grid grid-cols-3 gap-4">
-          <StatBlock icon="📊" label="Density"  value={`${Math.round(crowd_density.value * 100)}%`} isDark={isDark} />
-          <StatBlock icon="⏱️" label="Wait"     value={`${waiting_time.minutes} min`} isDark={isDark} />
+          <StatBlock icon="📊" label="Density" value={`${Math.round(crowd_density.value * 100)}%`} isDark={isDark} />
+          <StatBlock icon="⏱️" label="Wait" value={`${waiting_time.minutes} min`} isDark={isDark} />
           <StatBlock icon="🛤️" label="Est. Time" value={`${route.estimated_time} min`} sub={route.is_accessible ? "♿ Accessible" : ""} isDark={isDark} />
         </div>
       </div>
@@ -485,4 +485,63 @@ export default function StatusCard({ data, theme = "dark" }) {
 
     </div>
   );
+}
+{/* ───────────── ZONE INTELLIGENCE ───────────── */ }
+{
+  data?.zones && data.zones.length > 0 && (
+    <div className="mt-10">
+      <h2 className="text-xl font-bold text-white mb-4">
+        Zone Intelligence
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {data.zones.map((zone, index) => {
+          const level = zone.crowd_density.level;
+
+          const color =
+            level === "low"
+              ? "border-green-400"
+              : level === "medium"
+                ? "border-yellow-400"
+                : "border-red-400";
+
+          return (
+            <div
+              key={index}
+              className={`p-4 rounded-xl border ${color} bg-[#111827] hover:scale-[1.02] transition-all`}
+            >
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {zone.name}
+              </h3>
+
+              <p className="text-sm text-slate-400">
+                Density:{" "}
+                <span className="font-semibold text-white">
+                  {zone.crowd_density.level}
+                </span>
+              </p>
+
+              <p className="text-sm text-slate-400">
+                Wait Time:{" "}
+                <span className="font-semibold text-white">
+                  {zone.waiting_time.minutes} min
+                </span>
+              </p>
+
+              <p className="text-sm text-slate-400 mt-2">
+                Prediction:{" "}
+                <span className="font-semibold text-white">
+                  {zone.prediction.level}
+                </span>
+              </p>
+
+              <p className="text-xs text-slate-500 mt-1">
+                {zone.prediction.recommendation}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  )
 }
