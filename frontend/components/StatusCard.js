@@ -488,56 +488,74 @@ export default function StatusCard({ data, theme = "dark" }) {
 }
 {/* ───────────── ZONE INTELLIGENCE ───────────── */ }
 {
-  data?.zones && data.zones.length > 0 && (
-    <div className="mt-10">
-      <h2 className="text-xl font-bold text-white mb-4">
-        Zone Intelligence
-      </h2>
+  Array.isArray(zones) && zones.length > 0 && (
+    <div className="flex flex-col gap-6 animate-fade-in">
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {data.zones.map((zone, index) => {
-          const level = zone.crowd_density.level;
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>
+          📍 Zone Intelligence
+        </h2>
+        <span className={`text-xs font-semibold uppercase tracking-wider ${secondaryText}`}>
+          {zones.length} Zones Active
+        </span>
+      </div>
+
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {zones.map((zone, index) => {
+          const density = zone.crowd_density.level;
 
           const color =
-            level === "low"
-              ? "border-green-400"
-              : level === "medium"
-                ? "border-yellow-400"
-                : "border-red-400";
+            density === "low"
+              ? "border-emerald-400"
+              : density === "medium"
+                ? "border-amber-400"
+                : "border-rose-500";
 
           return (
             <div
               key={index}
-              className={`p-4 rounded-xl border ${color} bg-[#111827] hover:scale-[1.02] transition-all`}
+              className={`rounded-2xl border ${color} p-5 transition-all hover:scale-[1.03]
+              ${isDark ? "bg-slate-800/50" : "bg-white shadow-md"}`}
             >
-              <h3 className="text-lg font-semibold text-white mb-2">
-                {zone.name}
-              </h3>
+              {/* Title */}
+              <div className="flex justify-between items-center mb-3">
+                <h3 className={`text-lg font-bold ${primaryText}`}>
+                  {zone.name}
+                </h3>
+                <Badge label={density} level={density} isDark={isDark} />
+              </div>
 
-              <p className="text-sm text-slate-400">
-                Density:{" "}
-                <span className="font-semibold text-white">
-                  {zone.crowd_density.level}
-                </span>
-              </p>
+              {/* Stats */}
+              <div className="grid grid-cols-2 gap-4 text-sm mb-3">
+                <div>
+                  <p className={secondaryText}>Density</p>
+                  <p className={`font-semibold ${primaryText}`}>
+                    {(zone.crowd_density.value * 100).toFixed(0)}%
+                  </p>
+                </div>
 
-              <p className="text-sm text-slate-400">
-                Wait Time:{" "}
-                <span className="font-semibold text-white">
-                  {zone.waiting_time.minutes} min
-                </span>
-              </p>
+                <div>
+                  <p className={secondaryText}>Wait</p>
+                  <p className={`font-semibold ${primaryText}`}>
+                    {zone.waiting_time.minutes} min
+                  </p>
+                </div>
+              </div>
 
-              <p className="text-sm text-slate-400 mt-2">
-                Prediction:{" "}
-                <span className="font-semibold text-white">
+              {/* Prediction */}
+              <div className="mt-3 border-t pt-3 border-slate-700/30">
+                <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">
+                  Prediction
+                </p>
+                <p className={`text-sm font-semibold ${primaryText}`}>
                   {zone.prediction.level}
-                </span>
-              </p>
-
-              <p className="text-xs text-slate-500 mt-1">
-                {zone.prediction.recommendation}
-              </p>
+                </p>
+                <p className={`text-xs ${secondaryText}`}>
+                  {zone.prediction.recommendation}
+                </p>
+              </div>
             </div>
           );
         })}
