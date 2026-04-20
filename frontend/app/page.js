@@ -1,216 +1,123 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { fetchStatus } from "../services/api"; // ✅ safe relative import
-import StatusCard from "../components/StatusCard";
+import Navbar from "@/components/Navbar";
+import FeatureCard from "@/components/FeatureCard";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-const REFRESH_MS = 5000;
+export default function LandingPage() {
+  const router = useRouter();
+  const [role, setRole] = useState(null);
 
-// ─────────────────────────────────────────────────────────────
-// Sun / Moon SVG icons (inline, zero-dependency)
-// ─────────────────────────────────────────────────────────────
-function SunIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-      fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="5" />
-      <line x1="12" y1="1"  x2="12" y2="3"  />
-      <line x1="12" y1="21" x2="12" y2="23" />
-      <line x1="4.22" y1="4.22"   x2="5.64" y2="5.64"   />
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-      <line x1="1"  y1="12" x2="3"  y2="12" />
-      <line x1="21" y1="12" x2="23" y2="12" />
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-    </svg>
-  );
-}
-
-function MoonIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-      fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    </svg>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// Main Page
-// ─────────────────────────────────────────────────────────────
-export default function HomePage() {
-  const [data,      setData]      = useState(null);
-  const [error,     setError]     = useState(null);
-  const [loading,   setLoading]   = useState(true);
-  const [countdown, setCountdown] = useState(REFRESH_MS / 1000);
-  const [mounted,   setMounted]   = useState(false);
-  const [theme,     setTheme]     = useState("dark"); // "dark" | "light"
-
-  // ── Hydration guard ──────────────────────────────────────
-  useEffect(() => { setMounted(true); }, []);
-
-  // ── Load persisted theme on mount ───────────────────────
   useEffect(() => {
-    const saved = localStorage.getItem("cf-theme");
-    if (saved === "light" || saved === "dark") setTheme(saved);
-  }, []);
-
-  // ── Apply theme class to <body> ──────────────────────────
-  useEffect(() => {
-    document.body.classList.remove("theme-dark", "theme-light");
-    document.body.classList.add(`theme-${theme}`);
-    localStorage.setItem("cf-theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
-
-  // ── Data fetching ────────────────────────────────────────
-  const load = useCallback(async () => {
-    try {
-      const result = await fetchStatus();
-      setData(result);
-      setError(null);
-      setCountdown(REFRESH_MS / 1000);
-    } catch (err) {
-      setError("Failed to connect to backend");
-    } finally {
-      setLoading(false);
+    const savedRole = localStorage.getItem("userRole");
+    if (savedRole) {
+      setRole(savedRole);
     }
   }, []);
 
-  useEffect(() => {
-    load();
-    const interval = setInterval(load, REFRESH_MS);
-    return () => clearInterval(interval);
-  }, [load]);
-
-  // ── Countdown timer ──────────────────────────────────────
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => (prev <= 1 ? REFRESH_MS / 1000 : prev - 1));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  if (!mounted) return null;
-
-  // ── Computed theme tokens ────────────────────────────────
-  const isDark = theme === "dark";
-
-  const pageBg       = isDark ? "bg-[#0a0f1e]"     : "bg-[#f8fafc]";
-  const headerBg     = isDark ? "bg-[#0a0f1e]/90"  : "bg-white/80";
-  const headerBorder = isDark ? "border-slate-800/80" : "border-slate-200/80";
-  const titleText    = isDark ? "text-white"        : "text-slate-900";
-  const subText      = isDark ? "text-slate-500"    : "text-slate-500";
-  const toggleBg     = isDark
-    ? "bg-slate-800 hover:bg-slate-700 text-amber-300"
-    : "bg-slate-100 hover:bg-slate-200 text-slate-700";
-  const footerText   = isDark ? "text-slate-700"    : "text-slate-400";
-  const footerBorder = isDark ? "border-slate-800/50" : "border-slate-200/50";
-  const skeletonBg   = isDark ? "bg-slate-800/60"   : "bg-slate-200/70";
-
   return (
-    <main className={`min-h-screen transition-colors duration-300 ${pageBg}`}>
+    <div className="min-h-screen bg-[#0a0f1e] text-white selection:bg-blue-500/30">
+      <Navbar />
 
-      {/* ── Sticky Header ─────────────────────────────────────── */}
-      <header className={`border-b ${headerBorder} ${headerBg} backdrop-blur-md sticky top-0 z-20`}>
-        <div className="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between">
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden px-6">
+        {/* Background Gradients */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute top-1/3 right-0 w-[400px] h-[400px] bg-purple-600/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-          {/* Brand */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-blue-600 flex items-center justify-center text-sm font-bold shadow-lg shadow-violet-500/30 flex-shrink-0">
-              CF
-            </div>
-            <div>
-              <h1 className={`text-sm font-bold tracking-tight ${titleText}`}>CrowdFlow</h1>
-              <p className={`text-xs ${subText}`}>AI-powered venue intelligence</p>
-            </div>
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-blue-300 font-medium mb-8 animate-fade-in">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+            Live Crowd Intelligence is Here
           </div>
-
-          {/* Right: Live badge + countdown + theme toggle */}
-          <div className="flex items-center gap-4">
-
-            {/* Live badge */}
-            <div className="flex items-center gap-1.5">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider hidden sm:inline">
-                Live
-              </span>
-            </div>
-
-            {/* Countdown */}
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
-              <svg className="w-3 h-3 text-violet-400 animate-spin" xmlns="http://www.w3.org/2000/svg"
-                fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-              </svg>
-              <span className="tabular-nums">
-                <span className="text-violet-400 font-semibold">{countdown}s</span>
-              </span>
-            </div>
-
-            {/* Theme toggle */}
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 ease-in-out cursor-pointer ${toggleBg} theme-icon-enter`}
-            >
-              {isDark ? <SunIcon /> : <MoonIcon />}
-            </button>
-          </div>
-
-        </div>
-      </header>
-
-      {/* ── Page Body ─────────────────────────────────────────── */}
-      <div className="max-w-4xl mx-auto px-5 py-8">
-
-        {/* Page heading */}
-        <div className="mb-8 animate-fade-in">
-          <h2 className={`text-2xl font-bold mb-1 ${titleText}`}>Live Venue Status</h2>
-          <p className={`text-sm ${subText}`}>
-            Real-time crowd intelligence · auto-refreshes every {REFRESH_MS / 1000}s
+          
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-gray-500 animate-fade-in" style={{ animationDelay: "100ms" }}>
+            AI-Powered Crowd <br className="hidden md:block" /> Management System
+          </h1>
+          
+          <p className="max-w-2xl mx-auto text-lg md:text-xl text-gray-400 mb-10 animate-fade-in" style={{ animationDelay: "200ms" }}>
+            Optimize event operations with real-time density tracking, predictive AI analytics, and dynamic route recommendations for sports venues and mega-events.
           </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in" style={{ animationDelay: "300ms" }}>
+            {role ? (
+              <Link
+                href="/dashboard"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-medium text-white bg-blue-600 hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/25"
+              >
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/register"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-medium text-white bg-blue-600 hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/25"
+                >
+                  Get Started
+                </Link>
+                <Link
+                  href="/login"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-medium text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
+                >
+                  Login to Account
+                </Link>
+              </>
+            )}
+          </div>
         </div>
+      </section>
 
-        {/* Loading skeleton */}
-        {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[200, 160, 160, 120, 120, 80].map((h, i) => (
-              <div
-                key={i}
-                className={`rounded-2xl animate-pulse ${skeletonBg} ${i === 0 ? "md:col-span-2" : ""}`}
-                style={{ height: `${h}px` }}
-              />
-            ))}
+      {/* Features Section */}
+      <section id="features" className="py-20 relative z-10 px-6 bg-black/20 border-y border-white/5">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Core Intelligence</h2>
+            <p className="text-gray-400">Everything you need to monitor, analyze, and direct crowds safely.</p>
           </div>
-        )}
 
-        {/* Error state */}
-        {error && !loading && (
-          <div className="rounded-2xl border border-red-500/40 bg-red-500/10 p-8 text-center animate-fade-in">
-            <p className="text-3xl mb-3">⚠️</p>
-            <p className="text-red-400 font-semibold">{error}</p>
-            <p className="text-slate-500 text-xs mt-2">Check that the backend server is running</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <FeatureCard 
+              icon="📡"
+              title="Real-Time Tracking"
+              description="Monitor crowd density and wait times across all venue zones instantly using a live updating dashboard."
+            />
+            <FeatureCard 
+              icon="🔮"
+              title="Predictive AI"
+              description="Stay ahead of bottlenecks. Our AI forecasts peak traffic times and provides actionable recommendations."
+            />
+            <FeatureCard 
+              icon="🗺️"
+              title="Route Optimization"
+              description="Dynamically route attendees through the venue with accessible, low-density pathways calculated on the fly."
+            />
           </div>
-        )}
+        </div>
+      </section>
 
-        {/* Main content */}
-        {!loading && !error && data && (
-          <StatusCard data={data} theme={theme} />
-        )}
+      {/* Mini Mock Dashboard Section */}
+      <section className="py-24 px-6 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          <div className="glass-dark rounded-2xl border border-white/10 p-2 md:p-4 shadow-2xl overflow-hidden group">
+            <div className="rounded-xl border border-white/5 bg-slate-900/50 aspect-video flex flex-col items-center justify-center relative overflow-hidden">
+              <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+              <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-500">🏢</div>
+              <h3 className="text-xl font-bold text-gray-300">CrowdFlow Dashboard Preview</h3>
+              <p className="text-gray-500 text-sm mt-2">Sign in to access live map data and metrics.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      </div>
-
-      {/* ── Footer ────────────────────────────────────────────── */}
-      <footer className={`text-center text-xs py-8 border-t mt-8 ${footerText} ${footerBorder}`}>
-        CrowdFlow © 2026 · AI-powered venue intelligence
+      {/* Footer */}
+      <footer className="py-8 text-center text-sm text-gray-500 border-t border-white/5">
+        <p>© 2026 CrowdFlow Intelligence. All rights reserved.</p>
       </footer>
-
-    </main>
+    </div>
   );
 }

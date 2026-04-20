@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
+from typing import Optional
 import random
 import time
 
@@ -8,38 +9,61 @@ from app.services.ai_adapter import generate_ai_insights
 
 router = APIRouter()
 
-
 @router.get("/status", tags=["Status"])
-def get_status(lat: float, lng: float) -> dict:
+def get_status(
+    user_id: Optional[str] = Query(None, description="User ID"),
+    event: Optional[str] = Query(None, description="Event type: concert, match, expo"),
+    lat: Optional[float] = Query(None, description="Latitude"),
+    lng: Optional[float] = Query(None, description="Longitude")
+) -> dict:
     """
-    Return a simulated real-time status for the given venue coordinates.
-
-    Crowd density is computed from a base random sample that is pushed
-    upward when weather is hot (+0.1) or traffic is high (+0.2).
-    AI insights are generated via Google Gemini (falls back gracefully
-    when the API key is absent).
-
-    Args:
-        lat: Latitude of the venue/zone.
-        lng: Longitude of the venue/zone.
-
-    Returns:
-        Crowd density, estimated wait time, recommended route, active alerts,
-        AI-generated insights, and contextual metadata.
+    Return a simulated real-time status for the given venue/event.
     """
     current_time = int(time.time())
 
+    if user_id == "user123":
+        event = "concert"
+    elif user_id == "user456":
+        event = "match"
+    elif not event:
+        event = "concert"
+
+    # ── Event-specific logic ────────────────────────────────────────────────
+    if event == "concert":
+        evt_lat = 23.0225
+        evt_lng = 72.5714
+        zone_names = ["Main Entrance", "VIP Gate", "Food Court", "Merch Stand", "General Admission"]
+        density_boost = 0.2
+    elif event == "match":
+        evt_lat = 19.0760
+        evt_lng = 72.8777
+        zone_names = ["North Stand", "South Stand", "East Stand", "West Stand", "Parking Area"]
+        density_boost = 0.3
+    elif event == "expo":
+        evt_lat = 28.6139
+        evt_lng = 77.2090
+        zone_names = ["Hall A", "Hall B", "Registration", "Networking Lounge", "Exit"]
+        density_boost = 0.0
+    else:
+        evt_lat = 23.0225
+        evt_lng = 72.5714
+        zone_names = ["Gate A", "Gate B", "Food Court", "Parking", "Exit Gate"]
+        density_boost = 0.1
+
+    # Override with provided lat/lng if available
+    final_lat = lat if lat is not None else evt_lat
+    final_lng = lng if lng is not None else evt_lng
+
     # ── External signals ────────────────────────────────────────────────────
-    weather = get_weather_condition(lat, lng)
-    traffic = get_traffic_level(lat, lng)
+    weather = get_weather_condition(final_lat, final_lng)
+    traffic = get_traffic_level(final_lat, final_lng)
 
     # ── Zone Intelligence (Multi-zone Support) ──────────────────────────────
-    zone_names = ["Gate A", "Gate B", "Food Court", "Parking", "Exit Gate"]
     zones = []
     
     for name in zone_names:
         # Independent density for each zone
-        z_base = random.uniform(0.15, 0.75)
+        z_base = random.uniform(0.15, 0.65) + density_boost
         if weather == "hot": z_base += 0.05
         if traffic == "high": z_base += 0.1
         z_density = round(min(z_base, 1.0), 2)
@@ -60,8 +84,8 @@ def get_status(lat: float, lng: float) -> dict:
         zones.append({
             "name": name,
             "location": {
-                "lat": lat + random.uniform(-0.001, 0.001),
-                "lng": lng + random.uniform(-0.001, 0.001),
+                "lat": final_lat + random.uniform(-0.002, 0.002),
+                "lng": final_lng + random.uniform(-0.002, 0.002),
             },
             "crowd_density": {
                 "value": z_density,
@@ -87,7 +111,7 @@ def get_status(lat: float, lng: float) -> dict:
 
     # ── Route ──────────────────────────────────────────────────────────────
     route = {
-        "path": ["Gate A", "Corridor B", "Section C"],
+        "path": [zone_names[0], zone_names[2], zone_names[-1]],
         "estimated_time": 5 + int(density * 10),
         "is_accessible": True,
     }
@@ -99,12 +123,13 @@ def get_status(lat: float, lng: float) -> dict:
             {
                 "type": "crowd",
                 "severity": "high",
-                "message": "High crowd density detected in specific zones",
+                "message": f"High crowd density detected at the {event.title() if event else 'venue'}",
             }
         )
 
     # ── AI Insights ────────────────────────────────────────────────────────
     ai_context = {
+        "event_type": event,
         "density": density,
         "density_level": density_level,
         "weather": weather,
@@ -114,7 +139,6 @@ def get_status(lat: float, lng: float) -> dict:
     ai_insights = generate_ai_insights(ai_context)
 
     # ── Predictive Intelligence (Overall) ──────────────────────────────────
-    # Existing overall prediction logic maintained for backward compatibility
     predicted_density = density
     if weather == "hot":
         predicted_density += 0.1
@@ -144,8 +168,8 @@ def get_status(lat: float, lng: float) -> dict:
     return {
         "timestamp": current_time,
         "location": {
-            "lat": lat,
-            "lng": lng,
+            "lat": final_lat,
+            "lng": final_lng,
         },
         "crowd_density": {
             "value": density,
@@ -161,6 +185,7 @@ def get_status(lat: float, lng: float) -> dict:
         "prediction": prediction,
         "metadata": {
             "source": "multi-zone-intelligence",
+            "event": event,
             "weather": weather,
             "traffic": traffic,
         },

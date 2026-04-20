@@ -3,3 +3,8 @@ uvicorn
 python-dotenv
 requests
 pydantic
+motor
+dnspython
+pyjwt
+passlib[bcrypt]
+bcrypt
